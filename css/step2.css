@@ -1,0 +1,107 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0a2647; /* Màu nền xanh đậm */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.content {
+    width: 80%; /* Thu nhỏ phần tử */
+    max-width: 400px; /* Giới hạn chiều rộng */
+    margin: 0 auto; /* Căn giữa nội dung */
+    background-color: #2b3f5a;
+    padding: 20px; /* Thêm khoảng cách bên trong */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #a7c4f2; /* Màu xanh nhạt hơn */
+    line-height: 1.5;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ffffff; /* Màu trắng nổi bật */
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #d1e5ff; /* Màu chữ xám xanh */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input[type="email"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #a7c4f2;
+    border-radius: 5px;
+    background-color: #1c396b;
+    color: white;
+    font-size: 16px;
+}
+
+input[type="email"]::placeholder {
+    color: #a7c4f2;
+}
+
+button, a {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #0084ff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+button, a:hover {
+    background-color: #005bb5;
+}
+
+button a span {
+    margin-left: 8px;
+    font-size: 18px;
+}
+

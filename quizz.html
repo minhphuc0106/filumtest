@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionnaire</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0a2647;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      margin: 0;
+    }
+
+    .question-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      background-color: #2b3f5a;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background-color: #2b3f5a;
+      border: 1px solid #a7c4f2;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
+    .option-button {
+      background-color: #2b3f5a;
+      text-transform: uppercase;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .option-button:hover {
+      background-color: #005bb5;
+    }
+
+    .selected {
+      background-color: #005bb5;
+      color: white;
+      font-weight: bold;
+    }
+
+    .result-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #122a4c;
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .result-container img {
+      max-width: 100px;
+      margin-bottom: 20px;
+    }
+
+    .result-container h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .result-container p {
+      text-align: left;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .result-container ul {
+      text-align: left;
+      list-style: disc inside;
+      margin-bottom: 20px;
+    }
+
+    .result-container li {
+      margin-bottom: 10px;
+    }
+
+    .result-container .cta-button {
+      display: inline-block;
+      background-color: #0084ff;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .result-container .cta-button:hover {
+      background-color: #005bb5;
+    }
+
+    .share-button {
+      display: inline-block;
+      background-color: #4caf50;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .share-button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="question-container">
+    <h3 id="question-title">Câu hỏi</h3>
+    <div id="options">
+
+    </div>
+    <div class="button-group">
+      <button id="prev-button">Quay lại</button>
+      <button id="next-button">Tiếp theo</button>
+    </div>
+  </div>
+
+  <script>
+    let totalScore = 0;
+    let userAnswers = {};
+    let currentQuestionIndex = 0;
+    let questions = [];
+    let results = [];
+    let resultLevel = null;
+
+    Promise.all([
+      fetch("question.json").then(response => response.json()),
+      fetch("result.json").then(response => response.json())
+    ])
+      .then(([questionsData, resultsData]) => {
+        questions = questionsData;
+        results = resultsData;
+        loadQuestion(currentQuestionIndex);
+      })
+      .catch(error => console.error("Lỗi khi tải file JSON:", error));
+
+    function loadQuestion(index) {
+      const question = questions[index];
+      document.getElementById("question-title").innerText = `Câu hỏi ${index + 1}/${questions.length}: ${question.title}`;
+
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = "";
+
+      question.options.forEach(option => {
+        const button = document.createElement("button");
+        button.innerText = option.text;
+        button.className = "option-button";
+        button.onclick = () => {
+          // Lưu câu trả lời và tính điểm
+          userAnswers[question.id] = option.score;
+
+          document.querySelectorAll(".option-button").forEach(btn => {
+            btn.classList.remove("selected");
+          });
+
+          button.classList.add("selected");
+
+          console.log(`Câu hỏi ${question.id}, Điểm: ${option.score}`);
+        };
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    document.getElementById("next-button").addEventListener("click", () => {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion(currentQuestionIndex);
+      } else {
+        calculateResult();
+      }
+    });
+
+    document.getElementById("prev-button").addEventListener("click", () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion(currentQuestionIndex);
+      }
+      else {
+        // Nếu đang ở câu 1, quay lại trang step2.html
+        window.location.href = "step2.html";
+      }
+    });
+    function calculateResult() {
+      totalScore = Object.values(userAnswers).reduce((sum, score) => sum + score, 0);
+
+      // Tìm kết quả phù hợp
+      const result = results.find(res => totalScore >= res.range[0] && totalScore <= res.range[1]);
+
+      if (result) {
+        resultLevel = result.level; // Lưu cấp độ để sử dụng cho chia sẻ
+        displayResult(result);
+      } else {
+        alert("Không tìm thấy kết quả phù hợp!");
+      }
+    }
+
+    function displayResult(result) {
+      document.querySelector(".question-container").innerHTML = `
+    <div class="result-container">
+      <img src="${result.icon}" alt="${result.name}">
+      <h2>Kết quả của bạn: ${result.name}</h2>
+      <p>${result.description.text}</p>
+      <h3>Các hành động gợi ý:</h3>
+      <ul>
+        ${result.key_actions.map(action => `<li>${action.text}</li>`).join("")}
+      </ul>
+      <button class="share-button" onclick="goToSharePage()">Chia sẻ</button>
+    </div>
+  `;
+    }
+
+    function goToSharePage() {
+      const imageMapping = {
+        1: "1.png",
+        2: "2.png",
+        3: "3.png",
+        4: "4.png",
+        5: "5.png"
+      };
+
+      // Tìm ảnh phù hợp với cấp độ kết quả
+      const imageFile = imageMapping[resultLevel];
+
+      // Điều hướng đến share.html và truyền thông tin qua query string
+      const shareUrl = `share.html?image=${encodeURIComponent(imageFile)}`;
+      window.location.href = shareUrl;
+    }
+
+
+  </script>
+
+
+</body>
+
+</html>
